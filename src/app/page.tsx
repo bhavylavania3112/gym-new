@@ -1,151 +1,237 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import { Star, CheckCircle, Activity, Users, Clock, Target, MessageCircle, ArrowRight } from "lucide-react";
 
 export default function Home() {
+  const { scrollY } = useScroll();
+  const yHero = useTransform(scrollY, [0, 1000], [0, 300]);
+  const opacityHero = useTransform(scrollY, [0, 500], [1, 0]);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Animation Variants
+  const fadeUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
   return (
-    <main className="relative min-h-screen bg-pitch overflow-hidden selection:bg-acid selection:text-pitch">
-      {/* Background Image layer */}
-      <div className="absolute top-0 left-0 w-full h-screen z-0">
-        <Image
-          src="/hero-bg.png"
-          alt="Brutalist Gym"
-          fill
-          priority
-          className="object-cover opacity-30 grayscale mix-blend-luminosity"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-pitch/60 via-transparent to-pitch/95" />
-      </div>
-
-      {/* Navbar overlay */}
-      <nav className="absolute top-0 w-full z-50 p-6 md:p-12 flex justify-between items-center mix-blend-difference text-white uppercase text-xs md:text-sm font-bold tracking-[0.2em]">
-        <span>VOLT ATHLETIC</span>
-        <div className="hidden md:flex gap-12">
-          <a href="#classes" className="hover:text-acid transition-colors">The Crucible</a>
-          <a href="#cult" className="hover:text-acid transition-colors">The Cult</a>
-          <a href="#commit" className="border-b border-acid text-acid pb-1 hover:bg-acid hover:text-pitch transition-all">Commit</a>
+    <main className="relative min-h-screen bg-pitch font-sans overflow-hidden pb-32">
+      {/* Sticky Navbar */}
+      <motion.nav 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5 }}
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-pitch/90 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.5)] border-b border-white/5' : 'bg-transparent py-2'}`}
+      >
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Activity className="text-purple w-6 h-6" />
+            <span className="text-white font-black text-xl tracking-tight uppercase">Volt<span className="text-purple">Fit</span></span>
+          </div>
+          <div className="hidden md:flex gap-8 text-sm font-semibold text-neutral-300 uppercase tracking-wide">
+            <a href="#programs" className="hover:text-cyan transition-colors">Programs</a>
+            <a href="#pricing" className="hover:text-cyan transition-colors">Pricing</a>
+            <a href="#trainers" className="hover:text-cyan transition-colors">Coaches</a>
+          </div>
+          <button className="bg-purple hover:bg-purple/90 text-white px-6 py-2 rounded font-bold text-sm uppercase tracking-wide transition-all hover:scale-105 shadow-[0_0_15px_rgba(124,58,237,0.4)]">
+            Start Free Trial
+          </button>
         </div>
-      </nav>
+      </motion.nav>
 
-      {/* Massive Typographic Hero */}
-      <section className="relative z-10 h-screen flex flex-col justify-center items-center px-4">
-        <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col items-center pointer-events-none mt-12"
-        >
-          <h1 className="text-[20vw] leading-[0.75] font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-neutral-800 tracking-tighter uppercase text-center drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)]">
-            RAW<br />IRON
-          </h1>
-          <motion.div 
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ delay: 0.8, duration: 1, ease: "anticipate" }}
-            className="w-full h-[3px] bg-acid mt-12 origin-left"
-          />
+      {/* Floating WhatsApp Button */}
+      <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform cursor-pointer">
+        <MessageCircle className="w-6 h-6" />
+      </a>
+
+      {/* HERO SECTION */}
+      <section className="relative h-screen flex items-center justify-center px-6 overflow-hidden pt-20">
+        <motion.div style={{ y: yHero, opacity: opacityHero }} className="absolute inset-0 w-full h-full z-0">
+          <Image src="/hero_premium.png" alt="Fitness Training" fill priority className="object-cover opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-pitch/40 via-pitch/60 to-pitch" />
+          <div className="absolute inset-0 bg-gradient-to-r from-pitch via-pitch/80 to-transparent w-full md:w-2/3" />
         </motion.div>
-        
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 1 }}
-          className="absolute bottom-12 right-6 md:right-12 text-acid uppercase tracking-[0.4em] text-[10px] md:text-xs font-bold max-w-[200px] text-right"
-        >
-          Sacrifice the weak. Build the elite. No pleasantries.
-        </motion.p>
-      </section>
 
-      {/* Experimental Asymmetric Classes Section */}
-      <section id="classes" className="relative z-10 w-full min-h-screen bg-pitch border-t border-carbon pt-32 pb-32 px-6 md:px-12 flex flex-col lg:flex-row gap-16 md:gap-24">
-        <div className="w-full lg:w-1/3 pt-12 sticky top-32 h-fit">
-          <motion.h2 
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="text-acid text-7xl md:text-9xl font-black uppercase leading-[0.85] tracking-tighter break-words"
-          >
-            THE<br/>CRUCIBLE
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="mt-12 text-neutral-400 text-xs md:text-sm uppercase tracking-[0.2em] leading-loose border-l border-carbon pl-6"
-          >
-            Our training methodologies are designed to break you down and forge you anew. Expect no sympathy. There is only the iron and the inevitable pain of growth.
-          </motion.p>
-        </div>
-        
-        <div className="w-full lg:w-2/3 flex flex-col border border-carbon">
-          {[
-            { id: "01", name: "Hypertrophy Grinder", desc: "Volume. Pain. Unrelenting physical stress yielding maximum muscular growth.", duration: "90 MIN" },
-            { id: "02", name: "Lactic Acid Bath", desc: "High intensity conditioning. If you aren't gasping for air, you aren't trying.", duration: "45 MIN" },
-            { id: "03", name: "Absolute Strength", desc: "1RM focused powerlifting mechanics. Move heavy earth. Period.", duration: "120 MIN" },
-            { id: "04", name: "The Void", desc: "Sensory deprivation calisthenics and endurance. Outlast your own mind.", duration: "60 MIN" }
-          ].map((c, i) => (
-            <motion.div 
-              key={c.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ delay: i * 0.15, ease: "easeOut" }}
-              className="group flex flex-col md:flex-row justify-between items-start md:items-center p-8 md:p-12 border-b border-carbon hover:bg-carbon transition-colors duration-500 cursor-crosshair last:border-b-0"
-            >
-              <div className="flex gap-8 items-start">
-                <span className="text-acid font-mono text-sm md:text-xl font-bold tracking-tighter">{c.id}</span>
-                <div className="max-w-md">
-                  <h3 className="text-2xl md:text-4xl font-black uppercase tracking-tighter group-hover:text-acid transition-colors duration-300">{c.name}</h3>
-                  <p className="text-neutral-500 uppercase text-[10px] md:text-xs mt-4 tracking-[0.2em] leading-relaxed">{c.desc}</p>
-                </div>
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-start gap-6">
+          <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="max-w-3xl">
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 bg-glass px-4 py-2 rounded-full border border-purple/30 text-cyan text-xs font-bold uppercase tracking-widest mb-4">
+              <span className="w-2 h-2 rounded-full bg-cyan animate-pulse" /> Limited Time Offer
+            </motion.div>
+            
+            <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-black text-white uppercase leading-[1.1] tracking-tighter">
+              Transform Your Body <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-purple to-cyan">In 90 Days.</span>
+            </motion.h1>
+            
+            <motion.p variants={fadeUp} className="mt-6 text-lg md:text-xl text-neutral-300 max-w-xl font-medium leading-relaxed">
+              Unlimited gym access + elite trainer-led classes starting at just <span className="text-white font-bold tracking-wider">₹999/month</span>. Real results, zero excuses.
+            </motion.p>
+            
+            <motion.div variants={fadeUp} className="mt-10 flex flex-col sm:flex-row gap-4">
+              <button className="bg-gradient-to-r from-purple to-cyan text-white px-8 py-4 rounded font-black uppercase tracking-wide hover:scale-[1.03] transition-all shadow-[0_0_30px_rgba(124,58,237,0.5)] flex items-center justify-center gap-2 group">
+                Start Free Trial <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button className="glass text-white px-8 py-4 rounded font-bold uppercase tracking-wide hover:bg-white/10 transition-colors">
+                View Plans
+              </button>
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="mt-12 flex items-center gap-8">
+              <div className="flex -space-x-4">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="w-10 h-10 rounded-full border-2 border-pitch bg-surface flex items-center justify-center overflow-hidden">
+                    <Users className="w-5 h-5 text-neutral-400" />
+                  </div>
+                ))}
               </div>
-              <div className="mt-8 md:mt-0 px-6 py-3 border border-neutral-800 text-xs tracking-widest uppercase font-bold group-hover:border-acid group-hover:bg-acid group-hover:text-pitch transition-all duration-300">
-                {c.duration}
+              <div className="flex flex-col">
+                <div className="flex text-cyan"><Star className="w-4 h-4 fill-current"/><Star className="w-4 h-4 fill-current"/><Star className="w-4 h-4 fill-current"/><Star className="w-4 h-4 fill-current"/><Star className="w-4 h-4 fill-current"/></div>
+                <span className="text-sm font-bold text-white mt-1">10,000+ Active Members</span>
               </div>
             </motion.div>
-          ))}
+          </motion.div>
         </div>
       </section>
 
-      {/* Instructors / Vibe Section */}
-      <section id="cult" className="relative z-10 w-full bg-pitch py-32 px-6 md:px-12 border-t border-carbon">
-        <div className="max-w-7xl mx-auto">
-          <motion.h2 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-white text-4xl md:text-7xl font-black uppercase tracking-tighter mb-24 text-center"
-          >
-            Led by <span className="text-acid">Monsters</span>
-          </motion.h2>
+      {/* PROGRAMS SECTION */}
+      <section id="programs" className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer} className="text-center mb-16">
+          <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-black uppercase text-white tracking-tight">The <span className="text-purple">Arsenal</span></motion.h2>
+          <motion.p variants={fadeUp} className="text-neutral-400 mt-4 max-w-2xl mx-auto">Elite methodologies designed for absolute transformation.</motion.p>
+        </motion.div>
+        
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { icon: Users, title: "Group Classes", desc: "High energy, community driven workouts." },
+            { icon: Target, title: "Expert Trainers", desc: "World-class coaching and form correction." },
+            { icon: Clock, title: "Flexible Timings", desc: "24/7 access to fit your brutal schedule." },
+            { icon: Activity, title: "Custom Plans", desc: "Tailored nutrition and lifting protocols." }
+          ].map((feature, i) => (
+            <motion.div key={i} variants={fadeUp} className="glass p-8 rounded border border-white/5 hover:border-purple/50 transition-colors group">
+              <feature.icon className="w-10 h-10 text-cyan mb-6 group-hover:scale-110 group-hover:text-purple transition-all" />
+              <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
+              <p className="text-neutral-400 text-sm leading-relaxed">{feature.desc}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* TRANSFORMATION SECTION */}
+      <section className="relative z-10 w-full bg-surface py-24">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="relative h-[500px] w-full rounded overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+            <Image src="/transform_after.png" alt="Transformation" fill className="object-cover" />
+            <div className="absolute bottom-6 right-6 glass px-6 py-3 rounded border border-white/10 flex flex-col items-center">
+              <span className="text-cyan font-black text-2xl">-24kg</span>
+              <span className="text-white text-xs font-bold uppercase tracking-widest mt-1">Fat Loss</span>
+            </div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="flex flex-col">
+            <div className="text-purple font-bold tracking-widest uppercase text-sm mb-4">Real People. Real Results.</div>
+            <h2 className="text-4xl md:text-5xl font-black text-white uppercase leading-[1.1] mb-6">&quot;I never thought I could look like this.&quot;</h2>
+            <p className="text-neutral-400 text-lg leading-relaxed mb-8">
+              &quot;Before joining VoltFit, I struggled with consistency. The expert coaches and high-energy culture pushed me past my limits. 90 days later, I&apos;m literally a different person. If you&apos;re on the fence, just jump.&quot;
+            </p>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-neutral-800" />
+              <div>
+                <div className="text-white font-bold">Rahul Sharma</div>
+                <div className="text-neutral-500 text-sm">Joined 4 months ago</div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* PRICING SECTION */}
+      <section id="pricing" className="relative z-10 max-w-7xl mx-auto px-6 py-32">
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer} className="text-center mb-20">
+          <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-black uppercase text-white tracking-tight">Invest In <span className="text-cyan">Yourself</span></motion.h2>
+          <motion.p variants={fadeUp} className="text-neutral-400 mt-4 max-w-2xl mx-auto">Transparent pricing. No hidden fees. Cancel anytime.</motion.p>
+        </motion.div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+          {/* HOME */}
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass p-8 border border-white/5 rounded flex flex-col hover:border-white/20 transition-all group">
+            <h3 className="text-xl font-bold text-white uppercase mb-2 group-hover:text-purple transition-colors">Home</h3>
+            <div className="flex items-end gap-1 mb-8">
+              <span className="text-4xl font-black text-white">₹499</span><span className="text-neutral-500 mb-1">/mo</span>
+            </div>
+            <ul className="space-y-4 mb-8 flex-1">
+              {['Home Workouts App', 'Nutrition Guides', 'Community Access'].map(f => (
+                <li key={f} className="flex items-center gap-3 text-sm text-neutral-300"><CheckCircle className="w-4 h-4 text-purple" /> {f}</li>
+              ))}
+            </ul>
+            <button className="w-full glass text-white py-3 rounded font-bold uppercase tracking-wide hover:bg-white/10 transition-colors">Join Now</button>
+          </motion.div>
+          
+          {/* PRO (Most Popular) */}
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-surface p-10 border-2 border-purple rounded relative shadow-[0_0_40px_rgba(124,58,237,0.15)] md:-mt-8 md:mb-8 z-10 hover:-translate-y-2 transition-transform duration-300">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-purple to-cyan text-white px-4 py-1 text-xs font-bold uppercase tracking-widest rounded-full">Most Popular</div>
+            <h3 className="text-2xl font-black text-white uppercase mb-2">Pro</h3>
+            <div className="flex items-end gap-1 mb-8">
+              <span className="text-5xl font-black text-white">₹999</span><span className="text-neutral-400 mb-1">/mo</span>
+            </div>
+            <ul className="space-y-4 mb-8 flex-1">
+              {['Unlimited Gym Access', 'All PRO Group Classes', '1 PT Session / Month', 'App & Nutrition'].map(f => (
+                <li key={f} className="flex items-center gap-3 text-sm text-white"><CheckCircle className="w-5 h-5 text-cyan" /> <span className="font-medium">{f}</span></li>
+              ))}
+            </ul>
+            <button className="w-full bg-gradient-to-r from-purple to-cyan text-white py-4 rounded font-black uppercase tracking-wide hover:scale-[1.03] transition-transform shadow-[0_0_20px_rgba(124,58,237,0.4)]">Join PRO Now</button>
+            <p className="text-center text-xs text-purple mt-4 font-semibold uppercase">⚡ Only 12 Spots Left</p>
+          </motion.div>
+
+          {/* ELITE */}
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="glass p-8 border border-white/5 rounded flex flex-col hover:border-white/20 transition-all group">
+            <h3 className="text-xl font-bold text-white uppercase mb-2 group-hover:text-purple transition-colors">Elite</h3>
+            <div className="flex items-end gap-1 mb-8">
+              <span className="text-4xl font-black text-white">₹1499</span><span className="text-neutral-500 mb-1">/mo</span>
+            </div>
+            <ul className="space-y-4 mb-8 flex-1">
+              {['Everything in PRO', 'Unlimited PT Sessions', 'Recovery Lounge Access', 'Premium Merch Pack'].map(f => (
+                <li key={f} className="flex items-center gap-3 text-sm text-neutral-300"><CheckCircle className="w-4 h-4 text-purple" /> {f}</li>
+              ))}
+            </ul>
+            <button className="w-full glass text-white py-3 rounded font-bold uppercase tracking-wide hover:bg-white/10 transition-colors">Join Elite</button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* TRAINERS SECTION */}
+      <section id="trainers" className="relative z-10 w-full bg-surface/50 py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer} className="text-center mb-16">
+            <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-black uppercase text-white tracking-tight">Meet The <span className="text-cyan">Elite</span></motion.h2>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { id: "jax", name: "Jax", role: "Strength Director", quote: "I don't care about your feelings. I care about your deadlift." },
-              { id: "viper", name: "Viper", role: "Conditioning Specialist", quote: "Puking is just weakness leaving the body." },
-              { id: "rex", name: "Rex", role: "Hypertrophy Coach", quote: "More weight. Less complaining." }
+              { id: "jax", name: "Jax", role: "Strength Director", exp: "12 Yrs Exp" },
+              { id: "viper", name: "Viper", role: "Conditioning", exp: "8 Yrs Exp" },
+              { id: "rex", name: "Rex", role: "Hypertrophy", exp: "10 Yrs Exp" }
             ].map((trainer, i) => (
-              <motion.div 
-                key={trainer.name}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.2 }}
-                className="bg-carbon flex flex-col relative group overflow-hidden min-h-[450px]"
-              >
-                <div className="absolute inset-0 z-0">
-                  <Image src={`/${trainer.id}.png`} alt={trainer.name} fill className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700 grayscale group-hover:grayscale-0" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-pitch via-pitch/40 to-transparent" />
-                </div>
-                
-                <div className="absolute top-0 right-0 w-16 h-16 bg-pitch -mr-8 -mt-8 rotate-45 transform group-hover:bg-acid transition-colors duration-500 z-10" />
-                
-                <div className="relative z-10 mt-auto p-8 flex flex-col gap-4">
-                  <h3 className="text-3xl font-black uppercase tracking-tighter text-white">{trainer.name}</h3>
-                  <p className="text-acid text-xs uppercase tracking-widest font-bold">{trainer.role}</p>
-                  <p className="text-neutral-300 text-sm italic font-serif">&quot;{trainer.quote}&quot;</p>
+              <motion.div key={trainer.name} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="group relative h-[450px] rounded overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-white/5 hover:border-cyan/50 transition-colors duration-500">
+                <Image src={`/${trainer.id}.png`} alt={trainer.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-pitch via-pitch/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+                <div className="absolute bottom-0 w-full p-8 flex flex-col translate-y-8 group-hover:translate-y-0 transition-transform duration-300">
+                  <h3 className="text-3xl font-black uppercase text-white drop-shadow-lg">{trainer.name}</h3>
+                  <p className="text-cyan font-bold uppercase tracking-widest text-sm mb-4">{trainer.role}</p>
+                  <p className="text-neutral-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">{trainer.exp} · World-Class Certifications · Dedicated to your growth.</p>
                 </div>
               </motion.div>
             ))}
@@ -153,28 +239,40 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA / Footer */}
-      <footer id="commit" className="relative z-10 w-full bg-carbon pt-32 pb-12 px-6 md:px-12 flex flex-col items-center border-t-4 border-acid">
-        <motion.h2 
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-5xl md:text-[8vw] font-black uppercase tracking-tighter text-white text-center leading-none"
-        >
-          Sign Your<br/>Soul Away
-        </motion.h2>
-        
-        <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="mt-16 bg-acid text-pitch px-12 py-6 text-xl md:text-3xl font-black uppercase tracking-tighter hover:bg-white transition-colors"
-        >
-          Commit Now
-        </motion.button>
+      {/* LEAD CAPTURE / FINAL CTA */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 py-32">
+        <div className="relative rounded overflow-hidden p-[2px] shadow-[0_0_50px_rgba(124,58,237,0.3)] bg-gradient-to-br from-purple to-cyan">
+          <div className="bg-pitch rounded p-12 md:p-20 flex flex-col items-center text-center">
+            <h2 className="text-4xl md:text-5xl font-black uppercase text-white tracking-tighter mb-4">Start Your Fitness Journey Today</h2>
+            <p className="text-neutral-400 text-lg mb-12 max-w-2xl">Don&apos;t wait for tomorrow. Your future self is begging you to start now. Claim your 7-day all-access free pass.</p>
+            
+            <form className="w-full max-w-md flex flex-col gap-4">
+              <input type="text" placeholder="Full Name" className="w-full bg-surface border border-white/10 text-white px-6 py-4 rounded focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,229,255,0.2)] transition-all" />
+              <input type="tel" placeholder="Phone Number" className="w-full bg-surface border border-white/10 text-white px-6 py-4 rounded focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,229,255,0.2)] transition-all" />
+              <button type="button" className="w-full mt-2 bg-gradient-to-r from-purple to-cyan text-white py-4 rounded font-black uppercase tracking-wide hover:scale-[1.02] active:scale-95 transition-transform shadow-[0_0_20px_rgba(124,58,237,0.4)]">
+                Book Free Trial Now
+              </button>
+            </form>
+            <p className="text-xs text-neutral-500 mt-6 font-medium uppercase tracking-widest">⚡ Instant Access · No Credit Card Required</p>
+          </div>
+        </div>
+      </section>
 
-        <div className="w-full mt-32 pt-8 border-t border-neutral-800 flex flex-col md:flex-row justify-between items-center gap-6">
-          <span className="text-acid font-black text-2xl tracking-tighter uppercase">VOLT</span>
-          <p className="text-neutral-600 text-xs uppercase tracking-widest">© 2026 Volt Athletic. All Rights Reserved.</p>
+      {/* FOOTER */}
+      <footer className="relative z-10 w-full border-t border-white/10 pt-16 pb-8 px-6 bg-surface">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-2">
+            <Activity className="text-purple w-8 h-8" />
+            <span className="text-white font-black text-2xl tracking-tight uppercase">Volt<span className="text-purple">Fit</span></span>
+          </div>
+          <div className="flex gap-6 text-sm text-neutral-400 uppercase font-bold">
+            <a href="#" className="hover:text-cyan transition-colors">Instagram</a>
+            <a href="#" className="hover:text-cyan transition-colors">YouTube</a>
+            <a href="#" className="hover:text-cyan transition-colors">Contact</a>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-white/5 text-center text-xs text-neutral-600 uppercase tracking-widest">
+          © 2026 VoltFit. All rights reserved. Built for the elite.
         </div>
       </footer>
     </main>
