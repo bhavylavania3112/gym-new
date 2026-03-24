@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-pitch: #050505;
+  --color-acid: #ccff00;
+  --color-carbon: #111111;
+  --color-foreground: var(--color-white);
+  --color-background: var(--color-pitch);
+
+  --font-sans: var(--font-sans);
+}
+
+:root {
+  --background: #050505;
+  --foreground: #ffffff;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+  text-transform: uppercase;
+}
+
+/* Brutalist raw styles */
+* {
+  border-radius: 0px !important;
+}
+
+::selection {
+  background: #ccff00;
+  color: #050505;
+}
+
+/* High contrast sharp scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccff00;
+}
