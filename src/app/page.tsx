@@ -123,9 +123,9 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { name: "Jax", role: "Strength Director", quote: "I don't care about your feelings. I care about your deadlift." },
-              { name: "Viper", role: "Conditioning Specialist", quote: "Puking is just weakness leaving the body." },
-              { name: "Rex", role: "Hypertrophy Coach", quote: "More weight. Less complaining." }
+              { id: "jax", name: "Jax", role: "Strength Director", quote: "I don't care about your feelings. I care about your deadlift." },
+              { id: "viper", name: "Viper", role: "Conditioning Specialist", quote: "Puking is just weakness leaving the body." },
+              { id: "rex", name: "Rex", role: "Hypertrophy Coach", quote: "More weight. Less complaining." }
             ].map((trainer, i) => (
               <motion.div 
                 key={trainer.name}
@@ -133,12 +133,20 @@ export default function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.2 }}
-                className="bg-carbon p-8 flex flex-col gap-6 relative group overflow-hidden"
+                className="bg-carbon flex flex-col relative group overflow-hidden min-h-[450px]"
               >
-                <div className="absolute top-0 right-0 w-16 h-16 bg-pitch -mr-8 -mt-8 rotate-45 transform group-hover:bg-acid transition-colors duration-500" />
-                <h3 className="text-3xl font-black uppercase tracking-tighter text-white">{trainer.name}</h3>
-                <p className="text-acid text-xs uppercase tracking-widest font-bold">{trainer.role}</p>
-                <p className="text-neutral-500 text-sm italic font-serif">&quot;{trainer.quote}&quot;</p>
+                <div className="absolute inset-0 z-0">
+                  <Image src={`/${trainer.id}.png`} alt={trainer.name} fill className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700 grayscale group-hover:grayscale-0" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-pitch via-pitch/40 to-transparent" />
+                </div>
+                
+                <div className="absolute top-0 right-0 w-16 h-16 bg-pitch -mr-8 -mt-8 rotate-45 transform group-hover:bg-acid transition-colors duration-500 z-10" />
+                
+                <div className="relative z-10 mt-auto p-8 flex flex-col gap-4">
+                  <h3 className="text-3xl font-black uppercase tracking-tighter text-white">{trainer.name}</h3>
+                  <p className="text-acid text-xs uppercase tracking-widest font-bold">{trainer.role}</p>
+                  <p className="text-neutral-300 text-sm italic font-serif">&quot;{trainer.quote}&quot;</p>
+                </div>
               </motion.div>
             ))}
           </div>
